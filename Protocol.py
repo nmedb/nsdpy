@@ -89,18 +89,28 @@ CableStatusEnum = Enum(Int,
                        crosstalk = 7)
 PortLimit = Optional(Struct('port' / Byte,
                             'limit' / Enum(Int,
-                                           none=0,
-                                           k512=1,
-                                           m1=2,
-                                           m2=3,
-                                           m4=4,
-                                           m8=5,
-                                           m16=6,
-                                           m32=7,
-                                           m64=8,
-                                           m128=9,
-                                           m256=10,
-                                           m512=11)))
+                                           limit_0=0,
+                                           limit_none=0,
+                                           limit_512k=1,
+                                           limit_1m=2,
+                                           limit_2m=3,
+                                           limit_4m=4,
+                                           limit_8m=5,
+                                           limit_16m=6,
+                                           limit_32m=7,
+                                           limit_64m=8,
+                                           limit_128m=9,
+                                           limit_256m=10,
+                                           limit_512m=11)))
+PortSpeedFlowcontrol = Optional(Struct('port' / Byte,
+                                       'speed' / Enum(Byte,
+                                                      disabled=0,
+                                                      auto=1,
+                                                      half_10m=2
+                                                      full_10m=3,
+                                                      half_100m=4,
+                                                      full_100m=5),
+                                       'flowcontrol' / Flag))
 BroadcastFilteringEnabled = Optional(Struct('enabled' / ExprAdapter(Byte,
                                         encoder = lambda o, c: o == 0x03,
                                         decoder = lambda o, c: '\x03' if o else '\x00')))
@@ -144,6 +154,7 @@ Message = 'message' / Struct(
                  igmp_header_validation   = 0x7000,
                  tlv_bitmap               = 0x7400,
                  loop_detection           = 0x9000,
+                 port_speed               = 0x9400,
 
                  # Actions
                  firmware_upgrade         = 0x0010,
@@ -156,11 +167,11 @@ Message = 'message' / Struct(
                  # Messages with unknown meaning
                  unknown0017              = 0x0017, # This message is sent by the ProSAFE Plus Utility before changing password.
                  unknown6400              = 0x6400,
+                 unknown7800              = 0x7800,
                  unknown7c00              = 0x7c00,
                  unknown8000              = 0x8000,
                  unknown8800              = 0x8800,
                  unknown8c00              = 0x8c00,
-                 unknown9400              = 0x9400,
 
                  # End of messages-marker
                  end_of_messages          = 0xffff),
@@ -213,7 +224,7 @@ Message = 'message' / Struct(
         'unknown8000':               Unknown,
         'unknown8800':               Unknown,
         'unknown8c00':               Unknown,
-        'unknown9400':               Unknown,
+        'port_speed':                PortSpeedFlowcontrol,
         'end_of_messages':           Pass,
     })))
 )
