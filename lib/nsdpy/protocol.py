@@ -179,7 +179,7 @@ Message = 'message' / Struct(
         'product_name':              Optional(Struct('name' / GreedyBytes)),
         'product_type':              Unknown,
         'system_name':               Optional(Struct('name' / GreedyBytes)),
-        'location':                  Struct('location' / GreedyBytes),
+        'location':                  Optional(Struct('location' / GreedyBytes)),
         'mac_address':               MAC,
         'ip_address':                IPv4,
         'netmask':                   IPv4,
