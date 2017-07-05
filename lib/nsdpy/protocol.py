@@ -104,12 +104,12 @@ PortLimit = Optional(Struct('port' / Byte,
                                            limit_512m=11)))
 PortSpeedFlowcontrol = Optional(Struct('port' / Byte,
                                        'speed' / Enum(Byte,
-                                                      disabled=0,
-                                                      auto=1,
-                                                      half_10m=2
-                                                      full_10m=3,
-                                                      half_100m=4,
-                                                      full_100m=5),
+                                                      speed_disabled=0,
+                                                      speed_auto=1,
+                                                      speed_hd10m=2,
+                                                      speed_fd10m=3,
+                                                      speed_hd100m=4,
+                                                      speed_fd100m=5),
                                        'flowcontrol' / Flag))
 BroadcastFilteringEnabled = Optional(Struct('enabled' / ExprAdapter(Byte,
                                         encoder = lambda o, c: o == 0x03,
