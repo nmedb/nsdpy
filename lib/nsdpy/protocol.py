@@ -118,8 +118,7 @@ BroadcastFilteringEnabled = Optional(Struct('enabled' / ExprAdapter(Byte,
                                         encoder = lambda o, c: o == 0x03,
                                         decoder = lambda o, c: '\x03' if o else '\x00')))
 
-Message = 'message' / Struct(
-    'tag' / Enum(Short,
+MessageType = Enum(Short,
                  # Information
                  product_name             = 0x0001,
                  product_type             = 0x0002, # guess
@@ -179,7 +178,10 @@ Message = 'message' / Struct(
                  # End of messages-marker
                  end_of_messages          = 0xffff,
 
-                 default = Pass),
+                 default = Pass)
+
+Message = 'message' / Struct(
+    'tag' / MessageType,
     Embedded(Prefixed(Short, Switch(this.tag, {
         'product_name':              Optional(Struct('name' / GreedyBytes)),
         'product_type':              Unknown,
@@ -267,7 +269,8 @@ Packet = 'packet' / Struct(
                     internal_error              = 0xf8,
                     timeout                     = 0xff),
     'unknown_0' / Default(Byte, 0),
-    'unknown_1' / Default(Int, 0),
+    'tlv' / Default(MessageType, 0),
+    'unknown_1' / Default(Short, 0),
     'host_mac' / MacAddress,
     'device_mac' / MacAddress,
     'unknown_2' / Default(Short, 0),
