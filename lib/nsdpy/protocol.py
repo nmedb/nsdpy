@@ -1,3 +1,6 @@
+import fcntl
+import socket
+import struct
 from construct import *
 from construct.lib import *
 from binascii import hexlify, unhexlify
@@ -272,7 +275,54 @@ Packet = 'packet' / Struct(
     'messages' / RepeatUntil(lambda obj, lst, ctx: obj.tag == 'end_of_messages', Message)
 )
 
-data = unhexlify('01 01 0000 00000000 080027da96d7 000000000000 0000 0001 4e534450 00000000 0014 0000 6000 0001 08 0c00 0000 0c00 0003 020201 1000 0000 1000 0031 03 0000000100000000 0000000002000000 0000000000000000 0000000000000000 0000000000000000 0000000000000005 1c00 0000 1c00 0009 04 00000003 00000011 2800 0000 2800 0004 0001 80 9f ffff 0000'.replace(' ', ''))
-p = Packet.parse(data)
+SIOCGIFADDR = 0x8915
+SIOCGIFHWADDR = 0x8927
 
-Packet.build(p)
+class PacketHandler:
+    def __init__(self, interface, mode='host', timeout=None):
+        self.last_addr = None
+        self.interface = interface
+        self.ip = self._get_ip()
+        self.mac = self._get_mac()
+        if mode == 'host':
+            a, l, r = 'host_mac', 63321, 63322
+        else:
+            a, l, r = 'device_mac', 63322, 63321
+        self.attr, self.local_port, self.remote_port = a, l, r
+        self.timeout = timeout
+        self.recv_socket = self._get_socket('255.255.255.255', self.local_port)
+        self.send_socket = self._get_socket(self.ip, self.local_port)
+
+    def _get_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        iface = struct.pack('256s', self.interface[:15])
+        a = fcntl.ioctl(s.fileno(), SIOCGIFADDR, iface)
+        return socket.inet_ntoa(a[20:24])
+
+    def _get_mac(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        iface = struct.pack('256s', self.interface[:15])
+        a = fcntl.ioctl(s.fileno(), SIOCGIFHWADDR, iface)[18:24]
+        return ':'.join(['%02x' % ord(c) for c in a])
+
+    def _get_socket(self, ip, port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sock.settimeout(self.timeout)
+        sock.bind((ip, port))
+        return sock
+
+    def send(self, packet):
+        self.send_socket.sendto(Packet.build(packet), ('255.255.255.255', self.remote_port))
+
+    def receive(self, raw=False):
+        p = None
+        try:
+            while p == None and getattr(p, self.attr, '') not in ['00:00:00:00:00:00', self.mac]:
+                data, self.last_addr = self.recv_socket.recvfrom(4096)
+                p = Packet.parse(data)
+        except socket.timeout:
+            self.last_addr = None
+            return None
+        return data if raw else p
