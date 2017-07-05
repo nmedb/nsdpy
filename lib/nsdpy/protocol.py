@@ -191,7 +191,7 @@ Message = 'message' / Struct(
         'firmware_version':          Optional(Struct('version' / GreedyBytes)),
         'firmware_version2':         Unknown,
         'firmware_active_image':     Optional(Struct('image' / Byte)),
-        'password_encryption':       Optional(Struct('enabled' / Flag)),
+        'password_encryption':       Optional(Struct('type' / Enum(Int, none=0, xor=1))),
         'link_speed':                Optional(Struct('port' / Byte, 'speed' / LinkSpeedEnum, Const('\x01'))),
         'port_traffic_stats':        Optional(Struct('port' / Byte, 'received' / Long, 'sent' / Long, Default(Long[3], [0, 0, 0]), 'crc_errors' / Long)),
         'cable_test_result':         Optional(Struct('port' / Byte, Embedded(Optional(Struct('status' / CableStatusEnum, 'meters' / Int))))),
