@@ -177,7 +177,9 @@ Message = 'message' / Struct(
                  unknown8c00              = 0x8c00,
 
                  # End of messages-marker
-                 end_of_messages          = 0xffff),
+                 end_of_messages          = 0xffff,
+
+                 default = Pass),
     Embedded(Prefixed(Short, Switch(this.tag, {
         'product_name':              Optional(Struct('name' / GreedyBytes)),
         'product_type':              Unknown,
@@ -229,7 +231,7 @@ Message = 'message' / Struct(
         'unknown8c00':               Unknown,
         'port_speed':                PortSpeedFlowcontrol,
         'end_of_messages':           Pass,
-    })))
+    }, default=Unknown)))
 )
 
 Packet = 'packet' / Struct(
