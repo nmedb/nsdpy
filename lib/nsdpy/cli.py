@@ -7,6 +7,7 @@ from argparse import ArgumentError, ArgumentParser
 
 class CommandAction(_StoreConstAction):
     'A command parser action'
+    # pylint: disable=too-few-public-methods
     def __init__(self, option_strings, dest, **kwargs):
         action = option_strings[0][2:]
         super(CommandAction, self).__init__(
@@ -32,7 +33,7 @@ class MessageAction(Action):
     def __call__(self, parser, namespace, values, option_string=None):
         msg = Container(tag=self.dest)
         if values is None:
-            self.suggest_action(namespace, 'read')
+            MessageAction.suggest_action(namespace, 'read')
         elif self.target is not None:
             if type(values) != list:
                 values = [values]
@@ -44,15 +45,17 @@ class MessageAction(Action):
                 target = self.target
             for trg, val in zip(target, values):
                 setattr(msg, trg, val)
-        self.append(namespace, msg)
+        MessageAction.append(namespace, msg)
 
-    def append(self, namespace, value):
+    @staticmethod
+    def append(namespace, value):
         'Appends a message'
         items = getattr(namespace, 'messages', [])
         items.append(value)
         setattr(namespace, 'messages', items)
 
-    def suggest_action(self, namespace, action):
+    @staticmethod
+    def suggest_action(namespace, action):
         'Add a suggested action'
         actions = getattr(namespace, 'suggested_actions', [])
         if type(action) == list:
@@ -258,8 +261,8 @@ class CommandMessageAction(MessageAction):
                                                    **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        self.suggest_action(namespace, 'write')
-        self.append(namespace, Container(tag=self.dest))
+        MessageAction.suggest_action(namespace, 'write')
+        MessageAction.append(namespace, Container(tag=self.dest))
 
 class ChoiceMessageAction(MessageAction):
     'An message action with multiple choices'
