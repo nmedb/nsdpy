@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+#from nsdpy import cli, network, protocol
+
+args = cli.parse_args()
+
+import random
+ph = PacketHandler(args.interface, 'device' if args.action == 'simulate' else 'host', 2)
+packet = Container(version=1,
+                   operation='read_req' if args.action == 'read' else 'write_req',
+                   result='success',
+                   host_mac=ph.mac,
+                   device_mac=args.target,
+                   sequence=random.randint(1, 65535),
+                   messages=args.messages)
+
+
+#print Packet.build(packet)
+
+ph.send(packet)
+while True:
+    rsp = ph.receive()
+    if rsp:
+        print rsp.device_mac
+        for msg in rsp.messages:
+            for key in ['address', 'version', 'name', 'ports', 'enabled', 'type', 'password']:
+                if msg.has_key(key):
+                    print '%s.%s = %s' % (msg.tag.replace('_', '-'), key, getattr(msg, key, ''))
+        print
+    else:
+        break
