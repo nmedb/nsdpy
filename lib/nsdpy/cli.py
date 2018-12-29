@@ -378,7 +378,7 @@ def get_parser():
     settings_group.add_argument('--change-password', action=ValueMessageAction,
                                 target='password')
     settings_group.add_argument('--product-type', action=ValueMessageAction,
-                                validate=['short'], target='unknown')
+                                validate=['short'], target='type')
     settings_group.add_argument('--firmware-images',
                                 action=ValueMessageAction,
                                 validate=['byte'], target='images')
