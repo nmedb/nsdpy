@@ -50,47 +50,8 @@ PortsByte = ExprAdapter(
     decoder=lambda obj, ctx:
       [p + 1 for p in xrange(0, 8) if obj & (1 << (7 - p))]
 )
-TLVBitmap = Optional(Struct('unknown' / Int, Embedded(BitStruct(
-    'unknown_0' / Flag,
-    'unknown_1' / Flag,
-    'unknown_2' / Flag,
-    'unknown_3' / Flag,
+TLVBitmap = Optional(Struct('unknown' / Long))
 
-    'multicast_0' / Flag,
-    'multicast_1' / Flag,
-    'multicast_2' / Flag,
-    'vlan_0' / Flag,
-
-    'unknown_8' / Flag,
-    'port_mirroring' / Flag,
-    'broadcast_filtering_0' / Flag,
-    'broadcast_filtering_1' / Flag,
-
-    'rate_limit_0' / Flag,
-    'rate_limit_1' / Flag,
-    'unknown_14' / Flag,
-    'unknown_15' / Flag,
-
-    'unknown_16' / Flag,
-    'qos_0' / Flag,
-    'qos_1' / Flag,
-    'qos_2' / Flag,
-
-    'vlan_1' / Flag,
-    'vlan_2' / Flag,
-    'vlan_3' / Flag,
-    'vlan_port' / Flag,
-
-    'unknown_24' / Flag,
-    'unknown_25' / Flag,
-    'cable_test' / Flag,
-    'port_statistics' / Flag,
-
-    'unknown_28' / Flag,
-    'unknown_29' / Flag,
-    'unknown_30' / Flag,
-    'factory_reset' / Flag)))
-)
 Unknown = Optional(Struct('unknown' / GreedyBytes))
 LinkSpeedEnum = Enum(
     Byte,
