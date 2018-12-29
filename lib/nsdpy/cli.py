@@ -458,5 +458,5 @@ def parse_args(args=None):
     parser = get_parser()
     namespace = Namespace(args=args, messages=[])
     args = parser.parse_args(namespace=namespace)
-    args['messages'].append(Container(tag='end_of_messages'))
+    args.messages.append(Container(tag='end_of_messages'))
     return args
