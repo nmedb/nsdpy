@@ -288,6 +288,7 @@ class ToggleMessageAction(ChoiceMessageAction):
     def __init__(self, option_strings, target='enabled', **kwargs):
         super(ToggleMessageAction, self).__init__(option_strings,
                                                   choices=['on', 'off'],
+                                                  target=target,
                                                   **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
