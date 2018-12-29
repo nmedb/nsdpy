@@ -192,7 +192,7 @@ Message = 'message' / Struct(
         'dhcp': Optional(Struct('enabled' / Flag)),
         'firmware_images': Optional(Struct('images' / Byte)),
         'firmware_version': Optional(Struct('version' / GreedyBytes)),
-        'firmware_version2': Unknown,
+        'firmware_version2': Optional(Struct('version' / GreedyBytes)),
         'firmware_active_image': Optional(Struct('image' / Byte)),
         'password_encryption': Optional(
             Struct('type' / Enum(Int, none=0, xor=1))
