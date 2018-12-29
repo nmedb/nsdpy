@@ -156,6 +156,7 @@ MessageType = Enum(
     loop_detection=0x9000,
     port_speed=0x9400,
     port_led_control=0xa000,
+    power_saving=0xa800,
 
     # Actions
     firmware_upgrade=0x0010,
@@ -282,6 +283,7 @@ Message = 'message' / Struct(
                 speed=1,
                 off=2))
         ),
+        'power_saving': Optional(Struct('enabled' / Flag)),
         'port_speed': PortSpeedFlowcontrol,
         'end_of_messages': Pass,
     }, default=Unknown)))
