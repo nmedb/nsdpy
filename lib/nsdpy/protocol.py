@@ -273,6 +273,7 @@ Message = 'message' / Struct(
         'password_auth_v1': Optional(Struct('hash' / GreedyBytes)),
         'password_auth_v2': Optional(Struct('hash' / GreedyBytes)),
         'unknown6400': Unknown,
+        'unknown7800': Unknown,
         'unknown7c00': Unknown,
         'unknown8000': Unknown,
         'unknown8800': Unknown,
