@@ -427,9 +427,9 @@ def get_parser():
     settings_group.add_argument('--vlan-config-802.1q',
                                 action=ValueMessageAction,
                                 nargs='*',
-                                validate=['port', 'portlist', 'portlist'],
-                                target=['port', 'tagged_ports', 'member_ports'],
-                                metavar=('PORT', 'TAGGED_PORTS')) # @todo
+                                validate=['vlanid', 'portlist', 'portlist'],
+                                target=['vlanid', 'tagged_ports', 'member_ports'],
+                                metavar=('VLANID', 'TAGGED_PORTS')) # @todo
     settings_group.add_argument('--port-speed', action=ValueMessageAction,
                                 nargs='*', # @todo 0|3
                                 validate=['port', 'port_speed', 'on_off'],
