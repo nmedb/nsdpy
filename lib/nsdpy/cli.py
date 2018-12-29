@@ -80,11 +80,12 @@ class MessageAction(Action):
     def validate_integer(self, value, min_value=0,
                          max_value=65535, name='value'):
         'Validate value a an integer with a minimum and maximum value'
-        try:
-            base = 16 if len(value) > 2 and value[:2] == '0x' else 10
-            value = int(value, base)
-        except ValueError:
-            value = None
+        if not isinstance(value, int):
+            try:
+                base = 16 if len(value) > 2 and value[:2] == '0x' else 10
+                value = int(value, base)
+            except ValueError:
+                value = None
         if value is None or value < min_value or value > max_value:
             msg = '%s must be an integer between %d and %d' % (
                 name, min_value, max_value)
@@ -214,7 +215,7 @@ class MessageAction(Action):
 
     def validate_portlist(self, portlist):
         'Validate as a portlist'
-        portlist = portlist.split(',')
+        portlist = [int(port) for port in portlist.split(',')]
         for port in portlist:
             self.validate_port(port)
         return portlist
