@@ -180,7 +180,7 @@ MessageType = Enum(
     qos=0x3400,
     port_qos=0x3800,
     ingress=0x4c00,
-    engress=0x5000,
+    egress=0x5000,
     broadcast_filtering=0x5400,
     broadcast_bandwidth=0x5800,
     mirror=0x5c00,
@@ -283,7 +283,7 @@ Message = 'message' / Struct(
                        low=4))
         ),
         'ingress': PortLimit,
-        'engress': PortLimit,
+        'egress': PortLimit,
         'broadcast_filtering': BroadcastFilteringEnabled,
         'broadcast_bandwidth': PortLimit,
         'mirror': Optional(
