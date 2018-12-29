@@ -324,6 +324,7 @@ def get_parser():
 
     add_commands(parser)
 
+    parser.add_argument('--debug', action='store_true', help='print debugging information')
     parser.add_argument('--interface', help='the network interface to use')
     parser.add_argument('--target', default='00:00:00:00:00:00', metavar='MAC')
 
