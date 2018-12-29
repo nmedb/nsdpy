@@ -178,6 +178,7 @@ MessageType = Enum(
     # End of messages-marker
     end_of_messages=0xffff,
 
+    nothing=0x0000,
     default=Pass
 )
 
