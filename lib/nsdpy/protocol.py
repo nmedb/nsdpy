@@ -131,6 +131,9 @@ MessageType = Enum(
     firmware_version2=0x000e, # guess
     firmware_active_image=0x000f, # guess
     password_encryption=0x0014,
+    password_salt=0x0017, # guess
+    password_auth_v1=0x0018, # guess
+    password_auth_v2=0x001a, # guess
     link_speed=0x0c00,
     traffic_stats=0x1000,
     cable_test_result=0x1c00,
@@ -162,7 +165,6 @@ MessageType = Enum(
     delete_vlan=0x2c00,
 
     # Messages with unknown meaning
-    unknown0017=0x0017,
     unknown6400=0x6400,
     unknown7800=0x7800,
     unknown7c00=0x7c00,
@@ -195,8 +197,9 @@ Message = 'message' / Struct(
         'firmware_version2': Optional(Struct('version' / GreedyBytes)),
         'firmware_active_image': Optional(Struct('image' / Byte)),
         'password_encryption': Optional(
-            Struct('type' / Enum(Int, none=0, xor=1))
+            Struct('type' / Enum(Int, none=0, xor=1, v1=8, v2a=16, v2b=17))
         ),
+        'password_salt': Optional(Struct('salt' / GreedyBytes)),
         'link_speed': Optional(
             Struct('port' / Byte, 'speed' / LinkSpeedEnum, 'flowcontrol' / Flag)
         ),
@@ -264,7 +267,8 @@ Message = 'message' / Struct(
         'reset_traffic_stats': Struct(Default(Byte, 1)),
         'test_cable': Struct('port' / Byte, Default(Byte, 1)),
         'delete_vlan': Struct('vlanid' / Short),
-        'unknown0017': Unknown,
+        'password_auth_v1': Optional(Struct('hash' / GreedyBytes)),
+        'password_auth_v2': Optional(Struct('hash' / GreedyBytes)),
         'unknown6400': Unknown,
         'unknown7c00': Unknown,
         'unknown8000': Unknown,
