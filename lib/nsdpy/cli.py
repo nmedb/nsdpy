@@ -338,7 +338,7 @@ def get_parser():
     settings_group = parser.add_argument_group('settings')
     settings_group.add_argument('--qos', action=ChoiceMessageAction,
                                 choices=['port', 'dscp'])
-    settings_group.add_argument('--vlan-mode', action=ChoiceMessageAction,
+    settings_group.add_argument('--vlan-engine', action=ChoiceMessageAction,
                                 choices=['basic-port',
                                          'advanced-port',
                                          'basic-802.1q',

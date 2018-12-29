@@ -173,7 +173,7 @@ MessageType = Enum(
     link_speed=0x0c00,
     traffic_stats=0x1000,
     cable_test_result=0x1c00,
-    vlan=0x2000,
+    vlan_engine=0x2000,
     vlan_config_id=0x2400,
     vlan_config_802_1q=0x2800,
     pvid=0x3000,
@@ -251,7 +251,7 @@ Message = 'message' / Struct(
                    Embedded(Optional(Struct('status' / CableStatusEnum,
                                             'meters' / Int))))
         ),
-        'vlan': Optional(
+        'vlan_engine': Optional(
             Struct('type' / Enum(
                 Byte,
                 none=0,
