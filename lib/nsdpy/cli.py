@@ -46,6 +46,7 @@ class MessageAction(Action):
             for trg, val in zip(target, values):
                 setattr(msg, trg, val)
         MessageAction.append(namespace, msg)
+        setattr(namespace, self.dest, True)
 
     @staticmethod
     def append(namespace, value):
