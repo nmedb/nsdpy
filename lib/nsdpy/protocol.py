@@ -155,6 +155,7 @@ MessageType = Enum(
     tlv_bitmap=0x7400,
     loop_detection=0x9000,
     port_speed=0x9400,
+    port_led_control=0xa000,
 
     # Actions
     firmware_upgrade=0x0010,
@@ -274,6 +275,13 @@ Message = 'message' / Struct(
         'unknown8000': Unknown,
         'unknown8800': Unknown,
         'unknown8c00': Unknown,
+        'port_led_control': Optional(
+            Struct('led' / Enum(
+                Byte,
+                speed_activity=0,
+                speed=1,
+                off=2))
+        ),
         'port_speed': PortSpeedFlowcontrol,
         'end_of_messages': Pass,
     }, default=Unknown)))
