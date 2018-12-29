@@ -198,7 +198,7 @@ Message = 'message' / Struct(
             Struct('type' / Enum(Int, none=0, xor=1))
         ),
         'link_speed': Optional(
-            Struct('port' / Byte, 'speed' / LinkSpeedEnum, Const('\x01'))
+            Struct('port' / Byte, 'speed' / LinkSpeedEnum, 'flowcontrol' / Flag)
         ),
         'traffic_stats': Optional(
             Struct('port' / Byte,
